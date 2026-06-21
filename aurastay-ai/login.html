@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AuraStay AI | Log In / Register</title>
+  
+  <!-- Font Awesome CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body style="display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px;">
+
+  <!-- 2D Canvas Neural Network Background Layer -->
+  <div class="ai-network-bg">
+    <canvas id="neural-canvas"></canvas>
+  </div>
+
+  <!-- Custom Cursor Elements -->
+  <div id="custom-cursor" class="custom-cursor"></div>
+  <div id="custom-cursor-dot" class="custom-cursor-dot"></div>
+
+  <!-- Centered Glassmorphic Login/Register Card -->
+  <div class="glass-card modal-card" style="max-width: 480px; width: 100%; position: relative; box-shadow: var(--shadow-3d); transform: none; display: block;">
+    <a href="index.html" class="modal-close-btn" style="text-decoration: none; display: flex; align-items: center; justify-content: center;"><i class="fa-solid fa-arrow-left"></i></a>
+    <div class="modal-header">
+      <i class="fa-solid fa-circle-user modal-header-icon text-accent" style="font-size: 2.5rem; color: var(--brand-teal);"></i>
+      <h2>Welcome to AuraStay</h2>
+      <p>Access your personalized dashboard console</p>
+    </div>
+    
+    <div class="auth-tabs">
+      <button id="tab-login" class="auth-tab active">Login</button>
+      <button id="tab-register" class="auth-tab">Register</button>
+    </div>
+    
+    <form id="auth-form" class="dashboard-form">
+      <div class="form-group hide" id="name-group">
+        <label for="auth-name"><i class="fa-regular fa-user"></i> Full Name</label>
+        <input type="text" id="auth-name" placeholder="e.g. Amelia Vance">
+      </div>
+      <div class="form-group">
+        <label for="auth-email"><i class="fa-regular fa-envelope"></i> Email Address</label>
+        <input type="email" id="auth-email" required placeholder="name@domain.com">
+      </div>
+      <div class="form-group">
+        <label for="auth-password"><i class="fa-solid fa-lock"></i> Password</label>
+        <input type="password" id="auth-password" required placeholder="••••••••">
+        <a href="#" id="forgot-password-btn" style="display: block; font-size: 0.75rem; color: var(--brand-teal); text-decoration: none; margin-top: 5px; text-align: right;">Forgot Password?</a>
+      </div>
+      <div class="form-group">
+        <label for="auth-role"><i class="fa-solid fa-shield-halved"></i> Account Role</label>
+        <select id="auth-role">
+          <option value="customer">Customer Guest</option>
+          <option value="staff">Hotel Staff Agent</option>
+          <option value="admin">System Administrator</option>
+        </select>
+      </div>
+      <button type="submit" id="auth-submit-btn" class="btn btn-block mt-4">Log In</button>
+    </form>
+  </div>
+
+  <!-- CDNs & Scripts -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="neural-bg.js"></script>
+  <script src="login.js"></script>
+</body>
+</html>

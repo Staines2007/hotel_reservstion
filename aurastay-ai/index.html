@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AuraStay AI | The Future of Intelligent Hotel Bookings</title>
+  <meta name="description" content="Intelligent hotel bookings with automated guest preferences, role-based dashboards, and AI dynamic pricing.">
+  
+  <!-- Font Awesome CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- 2D Canvas Neural Network Background Layer -->
+  <div class="ai-network-bg">
+    <canvas id="neural-canvas"></canvas>
+  </div>
+
+  <!-- Custom Cursor Elements -->
+  <div id="custom-cursor" class="custom-cursor"></div>
+  <div id="custom-cursor-dot" class="custom-cursor-dot"></div>
+
+  <!-- Sticky Glassmorphism Header/Navbar (Resort Style) -->
+  <nav class="resort-navbar">
+    <a href="#" class="resort-brand">
+      <i class="fa-solid fa-hotel"></i> Aura<span class="text-gradient">Stay</span> AI
+    </a>
+    
+    <ul class="nav-links">
+      <li><a href="#hero" class="active">Home</a></li>
+      <li><a href="#problem">The Issue</a></li>
+      <li><a href="#solution">The Cure</a></li>
+      <li><a href="#pricing">Tiers</a></li>
+    </ul>
+
+    <div class="nav-actions">
+      <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle Theme">
+        <i data-lucide="sun" class="sun-icon"></i>
+        <i data-lucide="moon" class="moon-icon"></i>
+      </button>
+      <a href="login.html" id="nav-auth-trigger" class="btn secondary" style="text-decoration: none;">Log In / Join</a>
+    </div>
+  </nav>
+
+  <!-- Main Content Wrapper -->
+  <main class="content-wrapper">
+
+    <!-- 1. CINEMATIC HERO SECTION -->
+    <section id="hero" class="nextgen-hero">
+      <div class="orb orb-one"></div>
+      <div class="orb orb-two"></div>
+      <div class="orb orb-three"></div>
+      
+      <div class="hero-container">
+        <div class="hero-layout">
+          <div class="hero-copy">
+            <div class="eyebrow"><i class="fa-solid fa-sparkles"></i> Intelligent Hotel Reservations</div>
+            <h1>
+              Book Luxury Rooms <span class="text-gradient">Tailored to Your Vibe</span>
+            </h1>
+            <p>
+              No hidden fees. No endless comparison scrolling. AuraStay AI scans our smart suites, validates your dates, and locks in the perfect reservation instantly.
+            </p>
+            <div class="hero-actions">
+              <a href="login.html" id="hero-auth-btn" class="btn" style="text-decoration: none;">Check Availability</a>
+            </div>
+          </div>
+          
+          <div class="hero-showcase">
+            <img src="assets/room_suite.png" alt="AuraStay Suite Preview">
+            <div class="floating-panel panel-top">
+              <strong>98%</strong>
+              <span>Sensory Match Rate</span>
+            </div>
+            <div class="floating-panel panel-bottom">
+              <strong>★ 4.9</strong>
+              <span>Verified Guest Rating</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Trust Stats Strip -->
+        <div class="trust-strip glass-card">
+          <div>
+            <strong>15+</strong>
+            <span>Intelligent Suites</span>
+          </div>
+          <div>
+            <strong>0s</strong>
+            <span>Smart Lock Sync Delay</span>
+          </div>
+          <div>
+            <strong>100%</strong>
+            <span>Flat Tariff Transparency</span>
+          </div>
+          <div>
+            <strong>24/7</strong>
+            <span>Aura Concierge Assistant</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. THE PROBLEM SECTION -->
+    <section id="problem" class="container" style="padding: 68px 0;">
+      <div class="section-header text-center">
+        <span class="section-tag">THE STATUS QUO</span>
+        <h2 class="section-title">The Booking Fatigue</h2>
+        <p class="section-desc">Why planning a relaxing vacation has become a stressful full-time chore.</p>
+      </div>
+      
+      <div class="problem-grid">
+        <div class="glass-card problem-card">
+          <div class="card-icon-wrapper red-glow">
+            <i class="fa-regular fa-clock" style="font-size: 1.5rem;"></i>
+          </div>
+          <h3>Hours Wasted Scrolling</h3>
+          <p class="text-xs text-muted mt-1" style="font-size: 0.85rem;">Filtering through hundreds of listings, reading conflicting reviews, and worrying about room quality anomalies.</p>
+        </div>
+        
+        <div class="glass-card problem-card">
+          <div class="card-icon-wrapper red-glow">
+            <i class="fa-solid fa-dollar-sign" style="font-size: 1.5rem;"></i>
+          </div>
+          <h3>Hidden Pricing Surprises</h3>
+          <p class="text-xs text-muted mt-1" style="font-size: 0.85rem;">Taxes, service markups, and processing charges appended at checkout. Pricing transparency is completely broken.</p>
+        </div>
+        
+        <div class="glass-card problem-card">
+          <div class="card-icon-wrapper red-glow">
+            <i class="fa-solid fa-triangle-exclamation" style="font-size: 1.5rem;"></i>
+          </div>
+          <h3>No Preferences Tuning</h3>
+          <p class="text-xs text-muted mt-1" style="font-size: 0.85rem;">Mattress stiffness, lighting presets, and temperature profiles are ignored. Traditional booking treats you like a number.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. THE SOLUTION SECTION -->
+    <section id="solution" style="padding: 68px 0; position: relative;">
+      <div class="container">
+        <div class="grid-2" style="align-items: center; gap: 4rem;">
+          <div class="solution-content">
+            <span class="section-tag">THE SOLUTION</span>
+            <h2 class="section-title" style="text-align: left;">AuraStay AI Protocol</h2>
+            <p style="color: var(--muted); margin-bottom: 2rem; text-align: left;">A unified reservation architecture that learns your preferences, checks inventory live, and generates secure smart lock permissions before check-in.</p>
+            <ul style="list-style: none; display: flex; flex-direction: column; gap: 1.5rem; text-align: left;">
+              <li style="display: flex; gap: 1rem; align-items: flex-start;">
+                <i class="fa-solid fa-circle-check text-success" style="font-size: 1.25rem; margin-top: 2px;"></i>
+                <div>
+                  <h4 style="font-size: 1rem; font-family: var(--font-sans);">Honest Flat Tariffs</h4>
+                  <p class="text-xs text-muted" style="font-size: 0.85rem;">What you see is the absolute final rate. Integrated payments via secure Razorpay.</p>
+                </div>
+              </li>
+              <li style="display: flex; gap: 1rem; align-items: flex-start;">
+                <i class="fa-solid fa-circle-check text-success" style="font-size: 1.25rem; margin-top: 2px;"></i>
+                <div>
+                  <h4 style="font-size: 1rem; font-family: var(--font-sans);">AI Pricing Optimization</h4>
+                  <p class="text-xs text-muted" style="font-size: 0.85rem;">Dynamic adjustments recommend optimal seasonal rates for a win-win hotel ecosystem.</p>
+                </div>
+              </li>
+            </ul>
+          </div>
+          
+          <div class="glass-card" style="padding: 2.5rem; min-height: 300px; background-image: radial-gradient(circle at top left, rgba(59, 130, 246, 0.08), transparent 60%);">
+            <div style="display: flex; gap: 0.5rem; border-bottom: 1px solid var(--line); padding-bottom: 1rem; margin-bottom: 1.5rem;">
+              <span style="width: 8px; height: 8px; border-radius:50%; background:var(--danger);"></span>
+              <span style="width: 8px; height: 8px; border-radius:50%; background:#fbbf24;"></span>
+              <span style="width: 8px; height: 8px; border-radius:50%; background:var(--success);"></span>
+              <span style="font-family: monospace; font-size: 0.75rem; color: var(--muted); margin-left: auto;">AURA_OS v1.4</span>
+            </div>
+            <div style="font-family: monospace; font-size: 0.78rem; line-height: 1.6; color: #34d399; background: rgba(0,0,0,0.3); padding: 1.25rem; border-radius: 12px; border: 1px solid var(--line);">
+              [12:05:31] Initializing Smart Room Sync...<br>
+              [12:05:33] Calibrating temperature: 21.5°C<br>
+              [12:05:35] Syncing circadian lighting: "Sunset Warm"<br>
+              [12:05:37] Smart locks connected. Room reservation ACTIVE.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. PRICING CLUB TIERS -->
+    <section id="pricing" class="container" style="padding: 68px 0;">
+      <div class="section-header text-center">
+        <span class="section-tag">AURA CLUB</span>
+        <h2 class="section-title">Membership Loyalty Tiers</h2>
+        <p class="section-desc">Unlock dynamic rate savings, lounge codes, and check-in priorities.</p>
+      </div>
+      
+      <div class="grid-2" style="max-width: 900px; margin: 3.5rem auto 0; gap: 2.5rem; align-items: start;">
+        <div class="glass-card" style="padding: 3rem 2.5rem; text-align: center;">
+          <span class="text-xs text-muted" style="letter-spacing: 0.1em; font-weight:700;">BASIC ACCESS</span>
+          <h3 style="font-size: 1.65rem; margin: 0.5rem 0;">Classic Guest</h3>
+          <div style="font-size: 2.75rem; font-weight:800; font-family: var(--font-sans); margin-bottom: 1.5rem;">₹0 <span style="font-size: 0.9rem; font-weight:400; color: var(--muted);">/ year</span></div>
+          <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.75rem; margin: 2rem 0; font-size: 0.88rem; text-align: left; padding-left: 1rem;">
+            <li><i class="fa-solid fa-check text-accent" style="margin-right: 0.5rem;"></i> Standard Room bookings</li>
+            <li><i class="fa-solid fa-check text-accent" style="margin-right: 0.5rem;"></i> Default AI Concierge Chat</li>
+            <li class="text-muted"><i class="fa-solid fa-xmark text-danger" style="margin-right: 0.5rem;"></i> Circadian preset overrides</li>
+          </ul>
+          <a href="login.html" class="btn secondary btn-block" id="pricing-basic-btn" style="text-decoration: none;">Get Started</a>
+        </div>
+        
+        <div class="glass-card" style="padding: 3.5rem 2.5rem; text-align: center; border-color: rgba(124, 58, 237, 0.4); background: rgba(124, 58, 237, 0.02); background-image: radial-gradient(circle at top left, rgba(245, 158, 11, 0.1), transparent 60%);">
+          <span class="text-xs text-accent" style="letter-spacing: 0.1em; font-weight:700; color: var(--brand-2);">RECOMMENDED</span>
+          <h3 style="font-size: 1.85rem; margin: 0.5rem 0;">Gold Sanctuary</h3>
+          <div style="font-size: 3.25rem; font-weight:800; font-family: var(--font-sans); margin-bottom: 1.5rem;">₹<span id="gold-price-val">3,000</span> <span style="font-size: 0.9rem; font-weight:400; color: var(--muted);">/ year</span></div>
+          <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.75rem; margin: 2rem 0; font-size: 0.88rem; text-align: left; padding-left: 1rem;">
+            <li><i class="fa-solid fa-check text-accent" style="margin-right: 0.5rem; color: var(--brand-2);"></i> Full room sensory overrides</li>
+            <li><i class="fa-solid fa-check text-accent" style="margin-right: 0.5rem; color: var(--brand-2);"></i> 10% Flat dynamic rate offsets</li>
+            <li><i class="fa-solid fa-check text-accent" style="margin-right: 0.5rem; color: var(--brand-2);"></i> Guaranteed late checkouts (+2h)</li>
+          </ul>
+          <a href="login.html" class="btn btn-block" id="pricing-gold-btn" style="text-decoration: none;">Join Gold Club</a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap: 1.5rem;">
+      <a href="#" class="resort-brand" style="font-size: 1.25rem;">
+        <i class="fa-solid fa-hotel"></i> Aura<span class="text-gradient">Stay</span> AI
+      </a>
+      <p style="margin: 0; color: var(--muted); font-size: 0.85rem;">&copy; 2026 AuraStay AI Inc. All smart locks operational.</p>
+    </div>
+  </footer>
+
+  <!-- CDNs & Scripts -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="neural-bg.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

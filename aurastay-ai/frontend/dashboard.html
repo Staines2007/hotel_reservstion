@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AuraStay AI | Dashboard Console</title>
+  
+  <!-- Font Awesome CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- 2D Canvas Neural Network Background Layer -->
+  <div class="ai-network-bg">
+    <canvas id="neural-canvas"></canvas>
+  </div>
+
+  <!-- Dynamic Toast Notifications Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Custom Cursor Elements -->
+  <div id="custom-cursor" class="custom-cursor"></div>
+  <div id="custom-cursor-dot" class="custom-cursor-dot"></div>
+
+  <!-- Unified Sidebar Dashboard Layout -->
+  <div class="app-layout">
+    
+    <!-- Left Sidebar Navigation Panel -->
+    <aside class="sidebar glass-card">
+      <a href="index.html" class="resort-brand" style="margin-bottom: 2.5rem;">
+        <i class="fa-solid fa-hotel"></i> Aura<span class="text-gradient">Stay</span> AI
+      </a>
+      
+      <!-- Dynamic Role-Based Side Navigation Links -->
+      <nav class="side-nav" id="sidebar-menu">
+        <!-- Customer Links -->
+        <a href="#" class="active" id="side-nav-discover" data-target="discover-view">
+          <i class="fa-solid fa-magnifying-glass"></i> Discover Rooms
+        </a>
+        <a href="#" id="side-nav-ledger" data-target="ledger-view">
+          <i class="fa-solid fa-list-check"></i> Stays Ledger
+        </a>
+        
+        <!-- Staff Links (hidden by default) -->
+        <a href="#" id="side-nav-staff-rooms" class="hide" data-target="staff-rooms-view">
+          <i class="fa-solid fa-circle-plus"></i> Room Inventory
+        </a>
+        <a href="#" id="side-nav-staff-bookings" class="hide" data-target="staff-bookings-view">
+          <i class="fa-solid fa-calendar-check"></i> Guest Bookings
+        </a>
+
+        <!-- Admin Links (hidden by default) -->
+        <a href="#" id="side-nav-admin-users" class="hide" data-target="admin-users-view">
+          <i class="fa-solid fa-users-gear"></i> User Settings
+        </a>
+        <a href="#" id="side-nav-admin-ai" class="hide" data-target="admin-ai-view">
+          <i class="fa-solid fa-sliders"></i> AI Configs
+        </a>
+      </nav>
+      
+      <!-- Logout Action Trigger -->
+      <div style="margin-top: auto; padding-top: 20px; border-top: 1px solid var(--line);">
+        <button class="btn secondary btn-block logout-btn">
+          <i class="fa-solid fa-right-from-bracket"></i> Log Out
+        </button>
+      </div>
+    </aside>
+
+    <!-- Right Main Workspace Content Area -->
+    <main class="main-content">
+      
+      <!-- Top Greetings & Workspace Indicators -->
+      <div class="dashboard-header">
+        <div>
+          <span class="section-tag" id="dashboard-role-tag">GUEST PROFILE</span>
+          <h2 id="dashboard-greeting-txt">Welcome Back, Guest</h2>
+        </div>
+        <div class="nav-actions">
+          <button id="edit-profile-btn" class="btn secondary btn-sm" style="min-height: 48px; border-radius: 999px; padding: 0 20px;" aria-label="Edit Profile">
+            <i class="fa-solid fa-user-pen" style="margin-right: 5px;"></i> Edit Profile
+          </button>
+          <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle Theme">
+            <i data-lucide="sun" class="sun-icon"></i>
+            <i data-lucide="moon" class="moon-icon"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- ==========================================================================
+           1. DISCOVER SUITES VIEW (Customer Discovery)
+           ========================================================================== -->
+      <div id="discover-view" class="dashboard-section view-section">
+        <div class="dashboard-grid">
+          
+          <!-- Filters Sidebar Panel -->
+          <div class="glass-card dashboard-controls-panel">
+            <h3>Filter Stays</h3>
+            <form id="search-stays-form" class="dashboard-form">
+              <div class="form-group">
+                <label for="search-location"><i class="fa-solid fa-location-dot"></i> Location</label>
+                <input type="text" id="search-location" placeholder="e.g. Taj Mahal Palace, The Leela Palace...">
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="stay-check-in"><i class="fa-regular fa-calendar"></i> Check In</label>
+                  <input type="date" id="stay-check-in" required>
+                </div>
+                <div class="form-group">
+                  <label for="stay-check-out"><i class="fa-regular fa-calendar"></i> Check Out</label>
+                  <input type="date" id="stay-check-out" required>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="stay-type"><i class="fa-solid fa-award"></i> Category</label>
+                  <select id="stay-type">
+                    <option value="all">All Types</option>
+                    <option value="standard">Standard</option>
+                    <option value="deluxe">Deluxe</option>
+                    <option value="suite">Suite</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="stay-guests"><i class="fa-solid fa-users"></i> Guests</label>
+                  <select id="stay-guests">
+                    <option value="1">1 Guest</option>
+                    <option value="2" selected>2 Guests</option>
+                    <option value="3">3 Guests</option>
+                    <option value="4">4 Guests</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label><i class="fa-solid fa-sliders"></i> Max Budget (₹/night)</label>
+                <input type="range" id="price-range" min="5000" max="75000" step="1000" value="35000">
+                <div class="text-right text-xs text-muted mt-1" id="price-val">₹35000</div>
+              </div>
+              <div id="booking-alert-box" class="alert-box hide">
+                <i class="fa-solid fa-circle-info alert-icon"></i>
+                <span id="booking-alert-msg">Dates invalid</span>
+              </div>
+              <button type="submit" class="btn btn-block">Search Availability</button>
+            </form>
+            
+            <!-- AI Recommendation panel widget -->
+            <div class="glass-card mt-6" style="padding: 1.25rem; border-color: rgba(45, 212, 191, 0.2);">
+              <div style="display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.5rem;">
+                <i class="fa-solid fa-wand-magic-sparkles text-accent" style="color: var(--brand-teal);"></i>
+                <h4 style="font-size: 0.85rem; font-family: var(--font-sans); font-weight: 700;">AI Concierge recommendation</h4>
+              </div>
+              <p class="text-xs text-muted" id="ai-recommender-insight-txt" style="text-align: left; line-height: 1.5;">Select dates to receive automated preference matching profiles based on seasonal demand.</p>
+            </div>
+          </div>
+
+          <!-- Room listings -->
+          <div class="dashboard-rooms-panel">
+            <h3>Curated Rooms Available (<span id="rooms-count-span">3</span>)</h3>
+            <div id="customer-rooms-grid" class="rooms-grid"></div>
+          </div>
+          
+        </div>
+      </div>
+
+      <!-- ==========================================================================
+           1.5. SENSORY TUNING & CHECKOUT STEP VIEW
+           ========================================================================== -->
+      <div id="sensory-step-view" class="dashboard-section view-section hide">
+        <div class="glass-card" style="padding: 2.5rem; max-width: 700px; margin: 0 auto; background-image: radial-gradient(circle at top left, rgba(45, 212, 191, 0.08), transparent 60%);">
+          <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;">
+            <button type="button" class="btn secondary btn-sm" onclick="cancelSensoryStep()" style="border-radius: 50%; width: 40px; height: 40px; padding: 0; display: inline-flex; align-items: center; justify-content: center;"><i class="fa-solid fa-arrow-left"></i></button>
+            <div style="text-align: left;">
+              <span class="section-tag">Booking Step 2 of 3</span>
+              <h3>Configure Suite & Sensory Tuning</h3>
+            </div>
+          </div>
+
+          <div class="dashboard-form">
+            <!-- Selected Room Summary -->
+            <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--line); border-radius: 12px; padding: 1.25rem; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; text-align: left;">
+              <div>
+                <h4 id="sensory-step-room-name" style="font-family: var(--font-sans); font-size: 1.1rem; color: var(--brand-teal);">Selected Room</h4>
+                <p id="sensory-step-hotel-name" class="text-xs text-muted">Hotel Location</p>
+              </div>
+              <div id="sensory-step-price" class="text-gradient font-bold" style="font-size: 1.3rem; font-weight: 800;">₹0/night</div>
+            </div>
+
+            <div class="sensory-grid" style="display: grid; gap: 1.5rem;">
+              <!-- Scent Diffuser Selector -->
+              <div class="form-group" style="text-align: left;">
+                <label for="step-sensory-scent"><i class="fa-solid fa-wind"></i> Pre-arrival Room Scent Diffuser</label>
+                <select id="step-sensory-scent" style="min-height: 44px; padding: 8px 14px; border-radius: 8px; background: var(--input-bg); color: var(--text); border: 1px solid var(--line); width: 100%;">
+                  <option value="Vanilla & Sandalwood">Warm Vanilla & Sandalwood (Relaxation)</option>
+                  <option value="Midnight Jasmine">Midnight Jasmine (Sleep Sync)</option>
+                  <option value="Himalayan Pine">Himalayan Pine & Cedarwood (Rejuvenation)</option>
+                  <option value="Ocean Breeze">Ocean Breeze & Eucalyptus (Focus/Calm)</option>
+                </select>
+              </div>
+
+              <!-- Room Temperature slider -->
+              <div class="range-wrap" style="text-align: left;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 0.5rem;">
+                  <label><i class="fa-solid fa-temperature-half"></i> Ambient Climate</label>
+                  <span id="step-temp-val-lbl" class="text-xs font-semibold text-accent" style="color: var(--brand-teal);">21.5°C (Cool Breeze)</span>
+                </div>
+                <input type="range" id="step-sensory-temp" class="luxury-range" min="16" max="28" step="0.5" value="21.5" style="box-shadow: none;">
+                <div class="range-labels" style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--muted); margin-top: 0.25rem;">
+                  <span>16°C</span>
+                  <span>28°C</span>
+                </div>
+              </div>
+
+              <!-- Bed rigidity slider -->
+              <div class="range-wrap" style="text-align: left;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 0.5rem;">
+                  <label><i class="fa-solid fa-bed"></i> Ergonomic Mattress Stiffness</label>
+                  <span id="step-mattress-val-lbl" class="text-xs font-semibold text-accent" style="color: var(--brand-teal);">Medium (Level 5)</span>
+                </div>
+                <input type="range" id="step-sensory-mattress" class="luxury-range" min="1" max="10" step="1" value="5" style="box-shadow: none;">
+                <div class="range-labels" style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--muted); margin-top: 0.25rem;">
+                  <span>Plush Cloud (1)</span>
+                  <span>Orthopedic (10)</span>
+                </div>
+              </div>
+
+              <!-- Acoustic profile selector -->
+              <div class="form-group" style="text-align: left;">
+                <label for="step-sensory-acoustics"><i class="fa-solid fa-volume-xmark"></i> Active Acoustic Shielding</label>
+                <select id="step-sensory-acoustics" style="min-height: 44px; padding: 8px 14px; border-radius: 8px; background: var(--input-bg); color: var(--text); border: 1px solid var(--line); width: 100%;">
+                  <option value="Silence Shield">Silence Shield (Flat 0dB)</option>
+                  <option value="Rain Forest White Noise">Rain Forest White Noise</option>
+                  <option value="Cosmic White Noise">Cosmic Pink Noise</option>
+                  <option value="Binaural Alpha Waves">Binaural Alpha Waves</option>
+                </select>
+              </div>
+
+              <!-- Smart lock sync checkbox -->
+              <div style="display:flex; align-items:center; gap:0.5rem; margin-top: 0.5rem;">
+                <input type="checkbox" id="step-sensory-lock-sync" checked style="width:18px; height:18px; min-height:auto; cursor:pointer; box-shadow:none;">
+                <label for="step-sensory-lock-sync" style="font-size:0.85rem; font-weight:600; cursor:pointer; margin: 0;">Autopair Mobile Smart Lock Key</label>
+              </div>
+            </div>
+
+            <button type="button" class="btn btn-block mt-6" onclick="confirmSensoryStep()" style="min-height: 50px;">Proceed to Payment Checkout</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==========================================================================
+           1.7. PAYMENT CHECKOUT STEP VIEW (Dedicated payment page)
+           ========================================================================== -->
+      <div id="checkout-step-view" class="dashboard-section view-section hide">
+        <div class="glass-card" style="padding: 2.5rem; max-width: 600px; margin: 0 auto; background-image: radial-gradient(circle at top left, rgba(59, 130, 246, 0.08), transparent 60%);">
+          <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;">
+            <button type="button" class="btn secondary btn-sm" onclick="cancelCheckoutStep()" style="border-radius: 50%; width: 40px; height: 40px; padding: 0; display: inline-flex; align-items: center; justify-content: center;"><i class="fa-solid fa-arrow-left"></i></button>
+            <div style="text-align: left;">
+              <span class="section-tag">Booking Step 3 of 3</span>
+              <h3>Confirm Booking & Payment</h3>
+            </div>
+          </div>
+
+          <div class="dashboard-form">
+            <!-- Summary Details Container -->
+            <div id="step-checkout-summary-body" style="text-align: left; display: grid; gap: 1rem; margin-bottom: 1.5rem;">
+              <!-- Dynamic Details will be injected here by JS -->
+            </div>
+
+            <!-- Razorpay Gateway Alert / Indicator -->
+            <div class="glass-card" style="padding: 1.25rem; border-color: rgba(45, 212, 191, 0.2); text-align: left; font-size: 0.82rem; color: var(--muted); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 10px;">
+              <i class="fa-solid fa-shield-halved text-accent" style="font-size: 1.5rem; color: var(--brand-teal);"></i>
+              <div>
+                <span class="font-semibold" style="color: #ffffff; display: block;">Secure Checkout gateway active</span>
+                All payments are validated by Razorpay secure server-side verification.
+              </div>
+            </div>
+
+            <!-- PMS & IoT Sync console placeholder -->
+            <div id="checkout-step-console-wrapper" class="hide" style="margin-bottom: 1.5rem;">
+              <!-- Sync logs injected here -->
+            </div>
+
+            <div id="checkout-step-actions" style="display: flex; gap: 1rem;">
+              <button type="button" onclick="cancelCheckoutStep()" class="btn secondary" style="flex: 1; min-height: 50px;">Cancel</button>
+              <button type="button" id="step-confirm-payment-btn" class="btn" style="flex: 1; min-height: 50px;">Pay & Finalize</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==========================================================================
+           2. LEDGER VIEW (Customer Booking History)
+           ========================================================================== -->
+      <div id="ledger-view" class="dashboard-section view-section hide">
+        <div class="glass-card" style="padding: 2.5rem; background-image: radial-gradient(circle at top left, rgba(124, 58, 237, 0.08), transparent 60%);">
+          <h3>Your Active Stays & Reservation History</h3>
+          <div id="customer-bookings-ledger" class="mt-4">
+            <p class="text-muted">No reservations found. Start exploring Discover Rooms!</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==========================================================================
+           3. STAFF ROOM INVENTORY VIEW (CRUD Room Management)
+           ========================================================================== -->
+      <div id="staff-rooms-view" class="dashboard-section view-section hide">
+        
+        <!-- Staff Operations Analytics Header stats -->
+        <div class="stats-row" style="margin-bottom: 2rem;">
+          <div class="glass-card stat-card">
+            <h4>Occupancy Rate</h4>
+            <div class="stat-value" id="staff-occupancy-txt">0%</div>
+            <p class="text-xs text-muted mt-1" id="staff-occupancy-sub">0 of 3 rooms occupied</p>
+          </div>
+          <div class="glass-card stat-card">
+            <h4>7-Day Occupancy Forecast</h4>
+            <div class="stat-value text-accent" style="color: var(--brand-teal);">74%</div>
+            <p class="text-xs text-muted mt-1">Estimated occupancy demand</p>
+          </div>
+          <div class="glass-card stat-card">
+            <h4>Dynamic Pricing Offset</h4>
+            <div class="stat-value text-gold" style="color: var(--brand-2);" id="staff-pricing-factor-txt">+10%</div>
+            <p class="text-xs text-muted mt-1">Active AI rate recommendation</p>
+          </div>
+        </div>
+
+        <div class="dashboard-grid">
+          <!-- Room CRUD Form -->
+          <div class="glass-card dashboard-controls-panel">
+            <h3 id="staff-form-title">Add Room Inventory</h3>
+            <form id="staff-room-form" class="dashboard-form">
+              <input type="hidden" id="staff-room-id" value="">
+              <div class="form-group">
+                <label for="room-name-input"><i class="fa-solid fa-signature"></i> Room Name</label>
+                <input type="text" id="room-name-input" placeholder="e.g. Suite 305" required>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="room-category-select"><i class="fa-solid fa-award"></i> Category</label>
+                  <select id="room-category-select">
+                    <option value="standard">Standard</option>
+                    <option value="deluxe">Deluxe</option>
+                    <option value="suite">Suite</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="room-price-input"><i class="fa-solid fa-indian-rupee-sign"></i> Base Price</label>
+                  <input type="number" id="room-price-input" placeholder="15000" required>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="room-hotel-input"><i class="fa-solid fa-location-dot"></i> Location</label>
+                <select id="room-hotel-input">
+                  <option value="Taj Mahal Palace, Mumbai">Taj Mahal Palace (Mumbai)</option>
+                  <option value="The Leela Palace, New Delhi">The Leela Palace (New Delhi)</option>
+                  <option value="Wildflower Hall, Shimla">Wildflower Hall (Shimla)</option>
+                  <option value="The Oberoi Udaivilas, Udaipur">The Oberoi Udaivilas (Udaipur)</option>
+                  <option value="Rambagh Palace, Jaipur">Rambagh Palace (Jaipur)</option>
+                  <option value="ITC Grand Chola, Chennai">ITC Grand Chola (Chennai)</option>
+                  <option value="Kumarakom Lake Resort, Kerala">Kumarakom Lake Resort (Kerala)</option>
+                  <option value="Taj Lake Palace, Udaipur">Taj Lake Palace (Udaipur)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="room-status-select"><i class="fa-solid fa-circle-check"></i> Status</label>
+                <select id="room-status-select">
+                  <option value="available">Available</option>
+                  <option value="occupied">Occupied</option>
+                  <option value="maintenance">Maintenance</option>
+                </select>
+              </div>
+              <button type="submit" id="staff-room-submit-btn" class="btn btn-block">Add Room</button>
+              <button type="button" id="staff-cancel-edit-btn" class="btn secondary btn-block hide">Cancel Edit</button>
+            </form>
+          </div>
+
+          <!-- Room List for edit/delete actions -->
+          <div class="dashboard-rooms-panel">
+            <h3>Inventory Directory</h3>
+            <div class="table-wrap">
+              <table class="dashboard-table">
+                <thead>
+                  <tr>
+                    <th>Room</th>
+                    <th>Category</th>
+                    <th>Price</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="staff-inventory-list"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==========================================================================
+           4. STAFF GUEST BOOKINGS VIEW (Roster Check-Ins/Outs)
+           ========================================================================== -->
+      <div id="staff-bookings-view" class="dashboard-section view-section hide">
+        <div class="glass-card" style="padding: 2.5rem; background-image: radial-gradient(circle at top left, rgba(59, 130, 246, 0.08), transparent 60%);">
+          <h3>Active Reservations & Guest Check-Ins</h3>
+          <div class="table-wrap">
+            <table class="dashboard-table">
+              <thead>
+                <tr>
+                  <th>Guest</th>
+                  <th>Room</th>
+                  <th>Dates</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="staff-reservations-list"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==========================================================================
+           5. ADMIN USER SETTINGS VIEW (RBAC role upgrades)
+           ========================================================================== -->
+      <div id="admin-users-view" class="dashboard-section view-section hide">
+        
+        <!-- Global Stats Row -->
+        <div class="stats-row" style="margin-bottom: 2rem;">
+          <div class="glass-card stat-card">
+            <h4>System Earnings Revenue</h4>
+            <div class="stat-value text-accent" style="color: var(--brand-teal);" id="admin-revenue-txt">₹0.00</div>
+          </div>
+          <div class="glass-card stat-card">
+            <h4>Registered Profiles</h4>
+            <div class="stat-value" id="admin-users-txt">3</div>
+          </div>
+          <div class="glass-card stat-card">
+            <h4>System Reservations Count</h4>
+            <div class="stat-value" id="admin-bookings-txt">0</div>
+          </div>
+        </div>
+
+        <div class="glass-card" style="padding: 2.5rem;">
+          <h3>User Profiles & Roles (RBAC Control)</h3>
+          <div class="table-wrap">
+            <table class="dashboard-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Role</th>
+                  <th>Update Role</th>
+                </tr>
+              </thead>
+              <tbody id="admin-users-list"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==========================================================================
+           6. ADMIN AI CONFIGURATIONS VIEW
+           ========================================================================== -->
+      <div id="admin-ai-view" class="dashboard-section view-section hide">
+        <div class="glass-card" style="padding: 2.5rem; max-width: 600px; margin: 0 auto; background-image: radial-gradient(circle at top left, rgba(245, 158, 11, 0.08), transparent 60%);">
+          <h3>AI Revenue & Pricing Configurations</h3>
+          <div class="dashboard-form mt-6">
+            <div class="panel-switch">
+              <span>Dynamic Pricing Adjuster</span>
+              <button class="btn btn-sm" id="toggle-dynamic-pricing" style="min-height:36px; padding: 4px 14px;">ENABLED</button>
+            </div>
+            <div class="panel-switch" style="flex-direction: column; align-items: start; gap: 0.75rem;">
+              <span style="font-weight: 600; font-size: 0.85rem;">Demand Multiplier Factor</span>
+              <input type="range" id="dynamic-pricing-range" min="0" max="30" value="10" style="padding:0; box-shadow:none; height:auto;">
+              <div class="text-right text-xs text-muted" id="dynamic-pricing-val" style="width: 100%;">+10%</div>
+            </div>
+            <!-- Real-time AI Fluctuation sparkline chart -->
+            <div class="sparkline-container">
+              <div class="sparkline-header">
+                <h5>AI Fluctuation Rate</h5>
+                <span class="text-xs text-accent" style="font-weight:700;" id="chart-live-val">+10% Demand</span>
+              </div>
+              <svg class="svg-sparkline" id="ai-price-sparkline" viewBox="0 0 300 70">
+                <defs>
+                  <linearGradient id="sparkline-grad" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0%" stop-color="var(--brand-teal)" />
+                    <stop offset="50%" stop-color="var(--brand-3)" />
+                    <stop offset="100%" stop-color="var(--brand)" />
+                  </linearGradient>
+                  <linearGradient id="sparkline-area-grad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="var(--brand)" stop-opacity="1" />
+                    <stop offset="100%" stop-color="var(--brand)" stop-opacity="0" />
+                  </linearGradient>
+                </defs>
+                <path class="sparkline-area" id="chart-area" d="" />
+                <path class="sparkline-path" id="chart-path" d="" />
+              </svg>
+            </div>
+            <!-- Membership Subscription Settings -->
+            <div class="panel-switch" style="flex-direction: column; align-items: start; gap: 0.75rem; border-top: 1px solid var(--line); padding-top: 1.5rem; margin-top: 0.5rem;">
+              <span style="font-weight: 600; font-size: 0.85rem;">Membership Subscription Price (₹/year)</span>
+              <div style="display: flex; width: 100%; gap: 10px; align-items: center;">
+                <input type="number" id="admin-subscription-price" min="0" placeholder="e.g. 3000" style="flex: 1; min-height: 40px; padding: 8px 12px; border-radius: 8px;">
+                <button class="btn btn-sm" id="save-subscription-price-btn" style="min-height: 40px; padding: 0 16px; border-radius: 8px; flex-shrink: 0;">Save Price</button>
+              </div>
+            </div>
+            <div class="glass-card" style="padding: 1.25rem; border-color: rgba(124, 58, 237, 0.2); font-size: 0.85rem; color: var(--muted); text-align: left;">
+              <i class="fa-solid fa-circle-exclamation text-accent" style="margin-right: 0.5rem; color: var(--brand);"></i>
+              AI dynamic updates automatically recalculate standard room base rates based on historical seasonal bookings trends.
+            </div>
+          </div> <!-- closes dashboard-form -->
+        </div> <!-- closes glass-card -->
+      </div> <!-- closes admin-ai-view -->
+
+      <!-- ==========================================================================
+           7. INVOICE RECEIPT STEP VIEW
+           ========================================================================== -->
+      <div id="invoice-step-view" class="dashboard-section view-section hide">
+        <div class="glass-card" style="padding: 2.5rem; max-width: 600px; margin: 0 auto; background-image: radial-gradient(circle at top left, rgba(52, 211, 153, 0.08), transparent 60%); border-color: rgba(52, 211, 153, 0.3);">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem;">
+            <div style="display: flex; align-items: center; gap: 1rem;">
+              <i class="fa-solid fa-receipt text-accent" style="font-size: 2rem; color: var(--brand-teal);"></i>
+              <div style="text-align: left;">
+                <span class="section-tag" style="color: var(--brand-teal);">Booking Summary Receipt</span>
+                <h3>Smart Suite Invoice</h3>
+              </div>
+            </div>
+            <button type="button" class="btn secondary btn-sm" onclick="closeInvoiceStep()" style="border-radius: 50%; width: 40px; height: 40px; padding: 0; display: inline-flex; align-items: center; justify-content: center;"><i class="fa-solid fa-xmark"></i></button>
+          </div>
+          
+          <div id="invoice-step-body" style="font-family: monospace; font-size: 0.85rem; background: rgba(0,0,0,0.35); padding: 2rem; border-radius: 12px; border: 1px solid var(--line); white-space: pre-wrap; line-height: 1.6; color: var(--text); text-align: left; margin-bottom: 1.5rem; letter-spacing: 0.05em; box-shadow: inset 2px 2px 8px rgba(0,0,0,0.5);"></div>
+          
+          <div style="display: flex; gap: 1rem;">
+            <button class="btn secondary" onclick="closeInvoiceStep()" style="flex: 1; min-height: 50px;">Close Receipt</button>
+            <button class="btn" onclick="window.print()" style="flex: 1; min-height: 50px;"><i class="fa-solid fa-print" style="margin-right: 0.5rem;"></i> Print / Save PDF</button>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Floating Chatbot Widget (Lux Style) -->
+  <div class="lux-chatbot">
+    <button id="chat-fab-btn" class="chat-fab">
+      <i class="fa-solid fa-robot"></i>
+      <span>Aura AI</span>
+    </button>
+    
+    <div id="chatbot-widget" class="chat-panel">
+      <header>
+        <div class="ai-avatar pulsing"><i class="fa-solid fa-microchip"></i></div>
+        <div>
+          <h4>Aura Concierge</h4>
+          <span>AI Active / Smart sync enabled</span>
+        </div>
+        <button id="chat-close-btn" class="chat-close"><i class="fa-solid fa-chevron-down"></i></button>
+      </header>
+      
+      <div class="chat-messages" id="chat-body-messages">
+        <div class="chat-message bot chat-msg">
+          <div class="ai-avatar" style="width:28px; height:28px; font-size: 0.75rem;"><i class="fa-solid fa-microchip"></i></div>
+          <p>Aura AI active. Ask me to search rooms, change themes, or book! Try:</p>
+        </div>
+        <div class="chat-suggestions">
+          <button onclick="chatbotSendMessage('Show me all deluxe suites')">"Show deluxe suites"</button>
+          <button onclick="chatbotSendMessage('Switch to light theme')">"Light mode"</button>
+          <button onclick="chatbotSendMessage('Book the Wellness Penthouse Suite')">"Book Wellness Suite"</button>
+        </div>
+      </div>
+      
+      <div id="voice-active-indicator" class="voice-active-indicator hide">
+        <div class="voice-wave">
+          <div class="wave-bar"></div>
+          <div class="wave-bar"></div>
+          <div class="wave-bar"></div>
+          <div class="wave-bar"></div>
+        </div>
+        <span>Listening...</span>
+      </div>
+      
+      <div class="chat-form with-mic">
+        <input type="text" id="chat-input" placeholder="Type a command...">
+        <button type="button" id="chat-mic-btn" class="chat-voice-btn" aria-label="Voice Input"><i class="fa-solid fa-microphone"></i></button>
+        <button id="chat-send-btn"><i class="fa-solid fa-paper-plane"></i></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="neural-bg.js"></script>
+  <script src="chatbot.js"></script>
+  <script src="dashboard.js"></script>
+</body>
+</html>
